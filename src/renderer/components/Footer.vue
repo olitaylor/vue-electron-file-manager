@@ -1,6 +1,6 @@
 <template>
   <div class="footer-options">
-  <label for="showHidden">Hidden 
+  <label for="showHidden" class="show-hidden">Hidden 
     <input type="checkbox" v-model="hidden">
   </label>
   </div>
@@ -27,7 +27,12 @@
 
 <style scoped lang="scss">
 .footer-options {
-    position: absolute;
-    bottom: 0;
+    position: relative;
+    padding: 5px;
+
+    .show-hidden {
+      position: absolute;
+      bottom: 0;
+    }
 }
 </style>

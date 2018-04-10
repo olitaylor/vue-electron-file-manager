@@ -9,13 +9,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: require('@/components/Folder').default,
-    },
-    {
-      path: ':directoryProp',
-      name: 'nextFolder',
-      props: true,
-      component: require('@/components/Folder').default
+      component: require('@/components/PaneHolder').default,
     },
     {
       path: '*',

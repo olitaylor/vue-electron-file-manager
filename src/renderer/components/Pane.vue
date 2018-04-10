@@ -1,14 +1,14 @@
 <template>
 <div>
-  <Navigation :directoryProp="directoryProp"></Navigation>
+  <Navigation v-model="directory" @navigation="navigationChange"></Navigation>
   <p class="permission" v-if="permissionDenied">Access Denied</p>
   <ul class="file-list">
     <li
       v-for="(file, index) in filtered" 
       :class="file.type" :tabindex="index">
-      <router-link v-if="file.type == 'directory'" :to="{ name:'nextFolder', params: { directoryProp: file.id }}">
+      <a v-if="file.type == 'directory'" @click="readDirectory(file.id)">
        > {{ file.file }}
-      </router-link>
+      </a>
       <a v-else nohref @click="openFile(file.id)"> {{ file.file }}</a>
     </li>
   </ul>
@@ -28,11 +28,12 @@
         directory: '/',
         directoryFiles: [],
         showHidden: false,
-        permissionDenied: false
+        permissionDenied: false,
+        paths: []
       }
     },
 
-    props: ['directoryProp'],
+    props: [],
 
     mounted() {
       this.directoryFiles = [];
@@ -52,18 +53,10 @@
       }
     },
 
-    watch: {
-
-      directoryProp() {
-        this.directoryFiles = [];
-        this.readDirectory(this.directoryProp);
-      }
-
-    },
     methods: {
 
-      readDirectory(path) {
-        console.log(path)
+      readDirectory(path, back = false) {
+        this.directory = path;
         fs.readdir(path, (err, files) => {
           'use strict';
 
@@ -72,8 +65,9 @@
             throw  err;
           } else {
             this.permissionDenied = false;
+            back !== true && this.paths.push(path);
           }
-
+          this.directoryFiles = []
           for (let file of files) {
             fs.stat(path + '/' +file, (err, stats) => {
               if(err) throw err;
@@ -88,6 +82,10 @@
           }
         });
 
+      },
+
+      navigationChange(data) {
+        this.readDirectory(data, true);
       },
 
       clickItem(file) {
@@ -116,6 +114,8 @@
   padding: 20px;
   margin: 10px 0;
   clear: both;
+  overflow: auto;
+  height: calc(100vh - 60px);
 
   li {
     width: 30%;

@@ -1,23 +1,51 @@
 <template>
   <div class="navigation">
-    <button :disabled="this.directoryProp == '/' || this.directoryProp == null" class="button" @click="goBack()">&#x2190;</button>
-    <p class="path">Path: <span class="location">{{ directoryProp.replace("//", "/") }}</span></p>
+    <button :disabled="value == '/' || value == null" class="button" @click="goTo(previousFolder)">&#x2190;</button>
+    <ul class="path">
+      <li class="no-link">Path:</li> 
+      <li><a class="location" @click="goTo('/')">Root/</a></li>
+      <li v-for="(path, index) in folders" v-if="folders.length > 0"
+          class="location"><a nohref @click="goTo(path, index)">{{ cleanPath(path) }}/</a>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
   export default {
-    props: ['directoryProp'],
-    computed: {
-        directoryArray() {
-           return this.directoryProp.split('/');
+    props: {
+      value: {
+        default: '/'
+      }
+    },
+    data() {
+      return {
+        folders: [],
+        previousFolder: null
+      }
+    },
+    watch: {
+      value(directory) {
+        this.folders = [];
+        let paths = directory.split('/').filter(item => item !== '');
+        paths = paths[paths.length-1] === "" ? paths.slice(0, paths.length-1): paths;
+        paths = paths[1] === "" ? paths.slice(1) : paths;
+        
+        let breadcrumb = paths.map((path, index) => {
+            let url = '/' + paths.slice(0, index+1).join('/');
+            this.folders.push(url)
+        });
 
-        }
+        this.previousFolder = this.folders[this.folders.length-2] || '/'
+      }
     },
     methods: {
-      goBack() {
-        this.$router.push({ name: 'nextFolder', 
-          params: { directoryProp: this.directoryProp.substr(0, this.directoryProp .lastIndexOf("/")) } })
+      cleanPath(path) {
+        return path.split('/').pop();
+      },
+      goTo(path) {
+        //console.log(path)
+        this.$emit('navigation', path)
       }
     }
   }
@@ -25,7 +53,7 @@
 
 <style scoped lang="scss">
 .navigation {
-    text-align: center;
+    text-align: left;
     font-size: 20px;
     overflow: auto;
 
@@ -45,6 +73,15 @@
         float: left;
         color: #c5c8c6;
         line-height: 30px;
+        padding: 0 10px;
+
+        li {
+          display: inline-block;
+          a {
+            color: #ce6700;
+            text-transform: lowercase;
+          }
+        }
     }
 }
 </style>
