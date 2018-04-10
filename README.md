@@ -1,6 +1,6 @@
-# skypanel-desktop
+# Vinder
 
-> An electron-vue project
+> An electron-vue file manager
 
 #### Build Setup
 
