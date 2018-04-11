@@ -1,19 +1,14 @@
 <template>
-<div>
+<div @mouseover="hoverPane(paneIndex)">
   <Navigation v-model="directory" @navigation="navigationChange"></Navigation>
   <p class="permission" v-if="permissionDenied">Access Denied</p>
   <ul class="file-list">
     <li
       v-for="(file, index) in filtered" 
       :class="file.type" :tabindex="index">
-      <a v-if="file.type == 'directory'" @click="readDirectory(file.id)">
-       > {{ file.file }}
-      </a>
-      <a v-else nohref @click="openFile(file.id)"> {{ file.file }}</a>
+        <a @click="clickItem(file)">{{ file.file }}</a>
     </li>
   </ul>
-  <router-view></router-view>
-  <Footer v-model="showHidden"></Footer>
 </div>
 </template>
 
@@ -33,7 +28,7 @@
       }
     },
 
-    props: [],
+    props: ['paneIndex'],
 
     mounted() {
       this.directoryFiles = [];
@@ -94,12 +89,15 @@
 
       openFile(path) {
         shell.openItem(path);
+      },
+
+      hoverPane(index) {
+        this.$emit('hoveredPane', index)
       }
 
     },
     components: {
-      'Navigation' : require('@/components/Navigation').default,
-      'Footer' : require('@/components/Footer').default
+      'Navigation' : require('@/components/Navigation').default
     }
   }
 </script>
@@ -111,18 +109,13 @@
   margin-top: 20px;
 }
 .file-list {
-  padding: 20px;
-  margin: 10px 0;
-  clear: both;
-  overflow: auto;
+  padding: 5px 10px;
+  margin: 0;
   height: calc(100vh - 60px);
 
   li {
-    width: 30%;
-    float: left;
-    overflow: hidden;
-    margin-right: 3%;
-
+    line-height: 1.4;
+    
     &.directory a {
       color: #A6E22E;
     }

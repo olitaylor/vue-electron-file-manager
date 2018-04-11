@@ -2,7 +2,6 @@
   <div class="navigation">
     <button :disabled="value == '/' || value == null" class="button" @click="goTo(previousFolder)">&#x2190;</button>
     <ul class="path">
-      <li class="no-link">Path:</li> 
       <li><a class="location" @click="goTo('/')">Root/</a></li>
       <li v-for="(path, index) in folders" v-if="folders.length > 0"
           class="location"><a nohref @click="goTo(path, index)">{{ cleanPath(path) }}/</a>
@@ -44,7 +43,6 @@
         return path.split('/').pop();
       },
       goTo(path) {
-        //console.log(path)
         this.$emit('navigation', path)
       }
     }
@@ -66,20 +64,23 @@
         height: initial;
         font-size: 20px;
         border: none;
+        border-right: 1px solid #dbdbdb;
     }
     .path {
-        background-color: #404040;
+        background-color: #ffffff;
         width: 80%;
         float: left;
-        color: #c5c8c6;
+        color: #000000;
         line-height: 30px;
-        padding: 0 10px;
+        padding: 0 5px;
 
         li {
           display: inline-block;
           a {
-            color: #ce6700;
+            color: #000000;
             text-transform: lowercase;
+            font-size: 13px;
+            line-height: 13px;
           }
         }
     }

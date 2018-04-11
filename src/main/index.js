@@ -1,4 +1,6 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron';
+const electron = require('electron')
+const ipcMain = electron.ipcMain;
 
 /**
  * Set `__static` path to static files in production
@@ -13,6 +15,21 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+/* Send event from menu to renderer **/
+function sendToRender(event, arg) {
+  mainWindow.webContents.send(event , arg);
+}
+
+/** Context menu */
+require('electron-context-menu')({
+	prepend: (params, browserWindow) => [{
+    label: 'Remove Pane',
+    click(params) {
+       sendToRender('RemovePane')
+    }
+	}]
+});
+
 function createWindow () {
   /**
    * Initial window options
@@ -21,8 +38,8 @@ function createWindow () {
     height: 500,
     useContentSize: true,
     width: 760,
-    titleBarStyle: 'hidden',
-    transparent: true, frame: false
+    // titleBarStyle: 'hidden',
+    // transparent: true, frame: false
   })
 
   mainWindow.loadURL(winURL)
@@ -30,6 +47,51 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  
+  const template = [
+    {
+      label: 'Vinder',
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        {
+          label: 'Test',
+          click: () => { console.log('plop') }
+        },
+        {
+          label: 'Learn more',
+          click: () => { shell.openExternal('https://url') }
+        },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'New Tab',
+          click () { sendToRender('NewPane') }
+        },
+        {
+          label: 'New Tab',
+          click () { sendToRender('RemovePane') }
+        },
+        { role: 'reload' }
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        { role: 'close' },
+        { role: 'minimize' },
+        { type: 'separator' },
+        { role: 'front' }
+      ]
+    }
+  ]
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 }
 
 app.on('ready', createWindow)
