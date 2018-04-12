@@ -23,9 +23,9 @@ function sendToRender(event, arg) {
 /** Context menu */
 require('electron-context-menu')({
 	prepend: (params, browserWindow) => [{
-    label: 'Remove Pane',
+    label: 'Remove Browser',
     click(params) {
-       sendToRender('RemovePane')
+       sendToRender('RemoveBrowser')
     }
 	}]
 });
@@ -70,12 +70,16 @@ function createWindow () {
       label: 'View',
       submenu: [
         {
-          label: 'New Tab',
-          click () { sendToRender('NewPane') }
+          label: 'New Local Tab',
+          click () { sendToRender('NewLocalBrowser') }
         },
         {
-          label: 'New Tab',
-          click () { sendToRender('RemovePane') }
+          label: 'New SSH Tab',
+          click () { sendToRender('NewSSHBrowser') }
+        },
+        {
+          label: 'Remove Tab',
+          click () { sendToRender('RemoveBrowser') }
         },
         { role: 'reload' }
       ]

@@ -1,5 +1,5 @@
 <template>
-<div @mouseover="hoverPane(paneIndex)">
+<div @mouseover="hoveredBrowser(browserIndex)">
   <Navigation v-model="directory" @navigation="navigationChange"></Navigation>
   <p class="permission" v-if="permissionDenied">Access Denied</p>
   <ul class="file-list">
@@ -24,15 +24,19 @@
         directoryFiles: [],
         showHidden: false,
         permissionDenied: false,
-        paths: []
+        paths: [],
+        browserIndex: ''
       }
     },
 
-    props: ['paneIndex'],
+    props: ['browser'],
 
     mounted() {
+      this.browserIndex = this.browser.name;
       this.directoryFiles = [];
-      this.readDirectory(this.directory);
+      this.browser.type === 'local' ? 
+        this.readDirectory(this.directory) :
+        this.loadSSH()
     },
 
     computed: {
@@ -79,6 +83,10 @@
 
       },
 
+      loadSSH() {
+        
+      },
+
       navigationChange(data) {
         this.readDirectory(data, true);
       },
@@ -91,13 +99,13 @@
         shell.openItem(path);
       },
 
-      hoverPane(index) {
-        this.$emit('hoveredPane', index)
+      hoveredBrowser(index) {
+        this.$emit('hoveredBrowser', index)
       }
 
     },
     components: {
-      'Navigation' : require('@/components/Navigation').default
+      'Navigation' : require('@/components/menus/Navigation').default
     }
   }
 </script>

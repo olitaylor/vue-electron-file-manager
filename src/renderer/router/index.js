@@ -9,7 +9,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: require('@/components/PaneHolder').default,
+      component: require('@/components/BrowserContainer').default,
     },
     {
       path: '*',
