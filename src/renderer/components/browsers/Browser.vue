@@ -6,6 +6,7 @@
     <li
       v-for="(file, index) in filtered" 
       :class="file.type" :tabindex="index">
+        <i class="icon" :class="{ 'icon-folder-open' : file.type == 'directory', 'icon-file-text2' : file.type == 'file'  }"></i>
         <a @click="clickItem(file)">{{ file.file }}</a>
     </li>
   </ul>
@@ -119,16 +120,36 @@
 .file-list {
   padding: 5px 10px;
   margin: 0;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 35px);
+  overflow: auto;
 
   li {
     line-height: 1.4;
+    font-size: 15px;
     
     &.directory a {
       color: #A6E22E;
     }
     &.file a {
       color: #6089b4;
+    }
+    &:focus {
+      outline: 0;
+    }
+
+    a {
+      &:focus {
+        outline: 0;
+        text-decoration: underline;
+      }
+    }
+
+    i {
+      color: #cccccc;
+
+      &.icon-file-text2 {
+        margin-right: 4px;
+      }
     }
   }
 }

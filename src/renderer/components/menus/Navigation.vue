@@ -2,9 +2,11 @@
   <div class="navigation">
     <button :disabled="value == '/' || value == null" class="button" @click="goTo(previousFolder)">&#x2190;</button>
     <ul class="path">
-      <li><a class="location" @click="goTo('/')">Root/</a></li>
-      <li v-for="(path, index) in folders" v-if="folders.length > 0"
-          class="location"><a nohref @click="goTo(path, index)">{{ cleanPath(path) }}/</a>
+      <li>
+        <a @click="goTo('/')">Root/</a>
+      </li><!-- Don't remove, this is fixing inline-block
+   --><li v-for="(path, index) in folders" v-if="folders.length > 0">
+        <a nohref @click="goTo(path, index)">{{ cleanPath(path) }}/</a>
       </li>
     </ul>
   </div>
@@ -53,26 +55,29 @@
 .navigation {
     text-align: left;
     font-size: 20px;
-    overflow: auto;
+    display: flex;
 
     button {
-        width: 20%;
-        float: left;
-        line-height: 30px;
-        padding: 0;
-        border-radius: 0;
-        height: initial;
-        font-size: 20px;
-        border: none;
-        border-right: 1px solid #dbdbdb;
+      width: 50px;
+      line-height: 30px;
+      padding: 0;
+      border-radius: 0;
+      height: initial;
+      font-size: 20px;
+      border: none;
+      background-color: #dcdcdc;
+
+      &:focus {
+        box-shadow: none;
+      }
     }
     .path {
         background-color: #ffffff;
-        width: 80%;
-        float: left;
         color: #000000;
         line-height: 30px;
         padding: 0 5px;
+        display: inline-block;
+        flex-grow: 1;
 
         li {
           display: inline-block;
@@ -80,7 +85,10 @@
             color: #000000;
             text-transform: lowercase;
             font-size: 13px;
-            line-height: 13px;
+
+            &:hover {
+              color: #0000ff;
+            }
           }
         }
     }
