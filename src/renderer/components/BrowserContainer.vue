@@ -57,7 +57,6 @@
       },
 
       hovered(data) {
-        console.log(data)
         this.selectedBrowser = data;
       }
 
