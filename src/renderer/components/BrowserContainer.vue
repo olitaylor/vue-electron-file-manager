@@ -1,7 +1,7 @@
 <template>
  <div class="browser-holder">
   <div class="browser" v-for="(i, index) in browsers" :key="i.name">
-    <Browser :browser="i" @hoveredBrowser="hovered"></Browser>
+    <Browser :browser="i" @hoveredBrowser="hovered" :terminal="terminal"></Browser>
   </div>
  </div>
 </template>
@@ -24,20 +24,29 @@
              type: 'local'
            }
           ],
-        selectedBrowser: ''
+        selectedBrowser: '',
+        showTerminal: false,
+        terminal: null
       }
     },
 
     mounted() {
+
       ipcRenderer.on('NewLocalBrowser', (event, message) => {
         this.addBrowser('local');
       });
+      
       ipcRenderer.on('NewSSHBrowser', (event, message) => {
         // SHOW SETTINGS WINDOW, ADD OR USE EXISTING SSH CONFIG
         this.addBrowser('ssh');
       });
+
       ipcRenderer.on('RemoveBrowser', (event, message) => {
         this.removeBrowser();
+      });
+
+      ipcRenderer.on('ToggleTerminal', (event, message) => {
+        this.terminal = { 'browser': this.selectedBrowser }
       });
 
     },
@@ -72,6 +81,7 @@
 <style scoped lang="scss">
   .browser-holder {
     display: flex;
+    height: 100%;
 
     .browser {
       flex-grow: 1;

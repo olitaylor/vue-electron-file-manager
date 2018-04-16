@@ -22,12 +22,20 @@ function sendToRender(event, arg) {
 
 /** Context menu */
 require('electron-context-menu')({
-	prepend: (params, browserWindow) => [{
-    label: 'Remove Browser',
-    click(params) {
-       sendToRender('RemoveBrowser')
+	prepend: (params, browserWindow) => [
+    {
+      label: 'Remove Browser',
+      click(params) {
+         sendToRender('RemoveBrowser')
+      }
+    },
+    {
+      label: 'Toggle Terminal',
+      click(params) {
+         sendToRender('ToggleTerminal')
+      }
     }
-	}]
+  ]
 });
 
 function createWindow () {
